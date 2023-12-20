@@ -1,0 +1,85 @@
+
+---
+import GenerateWords from '../components/GenerateWords.jsx';
+---
+<script>
+    fetch("/src/words.txt")// get words from words.txt and put then in localstorage as ["word","word"]
+    .then(x => x.text())
+    .then(y =>{
+        let textArr = y.split('\n');
+        for(let i = 0; i < textArr.length; i++){
+            localStorage.setItem(i.toString(),textArr[i].toString());
+        }
+    });
+</script>
+<script is:inline src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<html lang="en">
+    <style>
+        .word-container{
+            display: flex;
+            justify-content: left;
+            flex-wrap: wrap;
+            max-width: 200px;
+            background-color: rgb(255, 255, 255);
+            white-space: pre;
+            
+        }
+        .nodeContainer{
+            height = 10px;
+        }
+    </style>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Typer</title>
+	</head>
+	<body>
+		<h1>Typer</h1>
+	</body>
+    <div>
+        <div class="word-container" id="poop">
+        </div>
+        <input id="typermouth" type="text"><br>
+        <br> 
+        <span id="output1">output should be here</span>
+    </div>
+    <script is:inline>
+        for(let i =0; i<20; i++){ // create the new div
+            let newNodeContainer = "<div class='nodeContainer' id="+i+" >";
+            let divContent = localStorage.getItem(Math.floor(Math.random()*3000).toString())+' ';
+            let word="";
+            for(let a = 0;a<divContent.length; a++){
+                let newLetterContainer = "<span class= 'nodeLetter' >";
+                let newLetter = divContent[a];
+                let letterClose = "</span>"
+                word= word+newLetterContainer+newLetter+letterClose;
+            }
+            let divClose = "</div>";
+
+            $('#poop').append(newNodeContainer+word+divClose);
+
+        }
+        let x= 0;
+        let wordLength = 0;
+        let currletter = 0;
+        wordLength = document.getElementById(x).childElementCount;
+        console.log(wordLength);
+        $('#typermouth').keyup(function(e) {
+        localStorage.setItem('input',$(this).val()) //set localStorage input to return value of keypress()
+        
+        
+        if(currletter===wordLength){
+            document.getElementById("typermouth").value = "";
+            //$("#poop").html(localStorage.getItem(Math.floor(Math.random()*3000)));
+            wordLength = document.getElementById(x).childElementCount;
+            console.log(wordLength);
+        }
+        }).keypress(function(e) {// makes sure input isnt anything weird?
+
+            return /[a-z0-9.-]/i.test(String.fromCharCode(e.which));
+        });
+    </script>
+</html>

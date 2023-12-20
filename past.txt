@@ -1,0 +1,74 @@
+
+---
+
+
+
+
+---
+<script>
+    //let typedtext = localStorage.setItem('example', 'example')
+    
+    fetch("/src/words.txt")// get words from words.txt and put then in localstorage as ["word","word"]
+    .then(x => x.text())
+    .then(y =>{
+        let textArr = y.split('\n');
+        //$("#output1").html(textArr)
+        for(let i = 0; i < textArr.length; i++){
+            localStorage.setItem(i.toString(),textArr[i].toString());
+        }
+    });
+    //console.log(localStorage.getItem(3))
+</script>
+<script is:inline src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Typer</title>
+	</head>
+	<body>
+		<h1>Typer</h1>
+	</body>
+    <div>
+        <p id="poop">example</p>
+        <input id="typermouth" type="text"><br>
+        {/*<span id="typedmatcher">input</span><br>*/}
+        <span id="tester" hidden>im freee!!!</span>
+        {/*<button id="button-test" onclick="update_typedtext()">boop</button>
+        <button id="next-test" onclick="print_saved()">localStorage 'input' contents</button>
+    */}
+        <br> 
+        <span id="output1">output should be here</span>
+    </div>
+    <script is:inline>
+        //console.log($("#poop").text())
+        $('#typermouth').keyup(function(e) {
+        //$("#typedmatcher").html($(this).val()); //set typedmatcher to return value of keypress()
+        localStorage.setItem('input',$(this).val()) //set localStorage input to return value of keypress()
+        if(localStorage.getItem('input')===$("#poop").text()){
+            document.getElementById("typermouth").value = ""
+            //TODO: set next word to type
+            $("#poop").html(localStorage.getItem(Math.floor(Math.random()*3000)))
+            //TODO: 
+        }
+        }).keypress(function(e) {// makes sure input isnt anything weird?
+            return /[a-z0-9.-]/i.test(String.fromCharCode(e.which));
+        });
+        /*
+        function update_typedtext(){
+            let input = document.getElementById("typermouth").value
+            alert(input)
+            localStorage.setItem('input',input)
+            
+        };
+        */
+       /* 
+        function print_saved(){
+            alert(localStorage.getItem('input'))
+        };*/
+        
+    </script>
+</html>
