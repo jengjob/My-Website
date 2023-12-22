@@ -12,7 +12,8 @@ import GenerateWords from '../components/GenerateWords.jsx';
         }
     });
 </script>
-<script is:inline src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script is:inline src="https://code.jquery.com/jquery-3.7.0.min.js">import { string } from "astro/zod";
+</script>
 
 <html lang="en">
     <style>
@@ -47,7 +48,7 @@ import GenerateWords from '../components/GenerateWords.jsx';
         <span id="output1">output should be here</span>
     </div>
     <script is:inline>
-        for(let i =0; i<20; i++){ // create the new div
+        for(let i =0; i<20; i++){ // create container for each word. each word contains spans for each letter
             let newNodeContainer = "<div class='nodeContainer' id="+i+" >";
             let divContent = localStorage.getItem(Math.floor(Math.random()*3000).toString())+' ';
             let word="";
@@ -65,31 +66,90 @@ import GenerateWords from '../components/GenerateWords.jsx';
         let x= 0;
         let wordLength = 0;
         let currletter = 0;
+        let allgreen = true;
+        let redcount = 0;//keeps track of which letter is missed
         wordLength = document.getElementById(x).childElementCount; 
-        //document.getElementById(0).style.textDecoration = "underline";
-        //document.getElementById(0).children[wordLength-1].style.textDecoration = "none";
         for(let i =0; i<wordLength-1;i++)//underlines the first word except the space
         {
             document.getElementById(0).children[i].style.textDecoration = "underline"
         }
-        console.log(document.getElementById(0).children[wordLength-1])
-
-        $('#typermouth').keyup(function(e) {
-            let userinput = $(this).val();
-            localStorage.setItem('input',$(this).val()) //set localStorage input to return value of keypress()
-            if(userinput === document.getElementById(x).children[0].textContent){
+        $("#typermouth").on('keydown', function(e){
+            let userinput = e.key
+            let pattern = /^[A-Za-z ]+$/;
+            console.log(userinput)
+            console.log()
+            if(!(pattern.test(userinput)&&((userinput.length <2)||(userinput =="Backspace") )))
+            {
+                console.log("not allowed")
+                return;
+            }
+            if((userinput === document.getElementById(x).children[currletter].textContent)&&allgreen){
                 //if user types in correct letter
                 // - highlight for correct letter
-            } 
-            if(currletter===wordLength){
-                document.getElementById("typermouth").value = "";
+                document.getElementById(x).children[currletter].style.backgroundColor = "#9dfaa7";
+                //set background green
+                
+            }else if(userinput == "Backspace"){
+                if(redcount>0){
+                    redcount--;
+                    if(redcount ==0)
+                    {
+                        allgreen = true;
+                    }
+                }
+                if(currletter>0)
+                {currletter--}
+                else{
+                    if(x==0){return;}
+                    x--;
+                    currletter = document.getElementById(x).childElementCount-1;
+                    wordLength = document.getElementById(x).childElementCount;
+                }
+                console.log(x+ "  "+ currletter+ "  "+ wordLength);
+                document.getElementById(x).children[currletter].style.backgroundColor = "white";
+                
+                return;
+            }else{
+                document.getElementById(x).children[currletter].style.backgroundColor = "#fc9090";
+                //set background red
+                allgreen = false;
+                redcount++;
+            }
+            currletter++;
+            if(currletter==wordLength){
+                console.log("inside end word")
+                currletter=0;
+                x++;
+                if(allgreen)
+                {
+                    document.getElementById("typermouth").value = "";
+                }
                 //$("#poop").html(localStorage.getItem(Math.floor(Math.random()*3000)));
                 wordLength = document.getElementById(x).childElementCount;
-                console.log(wordLength);
             }
-        }).keypress(function(e) {// makes sure input isnt anything weird?
-
-            return /[a-z0-9.-]/i.test(String.fromCharCode(e.which));
+            console.log(x+ "  "+ currletter+ "  "+ wordLength);
+            
         });
+        /*document.getElementById("typermouth").addEventListener('keydown',function(event){
+            const key = event.key;
+
+            if(key === "Backspace" || key === "Delete"){
+                console.log(key)
+                if(currletter === 0)
+                {
+                    if(x>0)
+                    {
+                        x--;
+                        currletter,wordLength = document.getElementById(x).childElementCount;
+                        document.getElementById(x).children[currletter].style.backgroundColor = "white";
+                    }else{
+                    }
+                }else{
+                    currletter--;
+                    document.getElementById(x).children[currletter].style.backgroundColor = "white";
+                    
+                }
+            }
+        });*/
     </script>
 </html>
