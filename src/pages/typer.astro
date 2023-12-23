@@ -77,7 +77,6 @@ import GenerateWords from '../components/GenerateWords.jsx';
             let userinput = e.key
             let pattern = /^[A-Za-z ]+$/;
             console.log(userinput)
-            console.log()
             if(!(pattern.test(userinput)&&((userinput.length <2)||(userinput =="Backspace") )))
             {
                 console.log("not allowed")
@@ -92,22 +91,27 @@ import GenerateWords from '../components/GenerateWords.jsx';
             }else if(userinput == "Backspace"){
                 if(redcount>0){
                     redcount--;
-                    if(redcount ==0)
-                    {
-                        allgreen = true;
-                    }
-                }
+                } 
+                
                 if(currletter>0)
                 {currletter--}
                 else{
-                    if(x==0){return;}
-                    x--;
-                    currletter = document.getElementById(x).childElementCount-1;
-                    wordLength = document.getElementById(x).childElementCount;
+                    
+                    if(allgreen){
+                        return;
+
+                    }else{
+                        x--;
+                        currletter = document.getElementById(x).childElementCount-1;
+                        wordLength = document.getElementById(x).childElementCount;
+                    }
                 }
                 console.log(x+ "  "+ currletter+ "  "+ wordLength);
                 document.getElementById(x).children[currletter].style.backgroundColor = "white";
-                
+                if(redcount ==0)
+                {
+                    allgreen = true;
+                }
                 return;
             }else{
                 document.getElementById(x).children[currletter].style.backgroundColor = "#fc9090";
@@ -123,6 +127,7 @@ import GenerateWords from '../components/GenerateWords.jsx';
                 if(allgreen)
                 {
                     document.getElementById("typermouth").value = "";
+                    e.preventDefault();
                 }
                 //$("#poop").html(localStorage.getItem(Math.floor(Math.random()*3000)));
                 wordLength = document.getElementById(x).childElementCount;
