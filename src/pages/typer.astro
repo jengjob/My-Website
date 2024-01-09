@@ -45,7 +45,6 @@ import GenerateWords from '../components/GenerateWords.jsx';
         </div>
         <input id="typermouth" type="text"><br>
         <br> 
-        <span id="output1">output should be here</span>
     </div>
     <script is:inline>
         for(let i =0; i<20; i++){ // create container for each word. each word contains spans for each letter
@@ -142,6 +141,10 @@ import GenerateWords from '../components/GenerateWords.jsx';
                 //console.log("inside end word")
                 currletter=0;
                 x++;
+                if(x==20)
+                {
+                    //TODO: reset word field and related data
+                }
                 wordLength = document.getElementById(x).childElementCount;
                 if(allgreen)
                 {
@@ -158,31 +161,11 @@ import GenerateWords from '../components/GenerateWords.jsx';
                     }
                     
                 }
+                
                 //$("#poop").html(localStorage.getItem(Math.floor(Math.random()*3000)));
             }
             console.log(x+ "  "+ currletter+ "  "+ wordLength);
             
         });
-        /*document.getElementById("typermouth").addEventListener('keydown',function(event){
-            const key = event.key;
-
-            if(key === "Backspace" || key === "Delete"){
-                console.log(key)
-                if(currletter === 0)
-                {
-                    if(x>0)
-                    {
-                        x--;
-                        currletter,wordLength = document.getElementById(x).childElementCount;
-                        document.getElementById(x).children[currletter].style.backgroundColor = "white";
-                    }else{
-                    }
-                }else{
-                    currletter--;
-                    document.getElementById(x).children[currletter].style.backgroundColor = "white";
-                    
-                }
-            }
-        });*/
     </script>
 </html>
