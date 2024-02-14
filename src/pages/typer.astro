@@ -1,6 +1,5 @@
 
 ---
-import GenerateWords from '../components/GenerateWords.jsx';
 ---
 <script>
     fetch("/src/words.txt")// get words from words.txt and put then in localstorage as ["word","word"]
@@ -137,13 +136,33 @@ import GenerateWords from '../components/GenerateWords.jsx';
                 redcount++;
             }
             currletter++;
-            if(currletter==wordLength){
+            if((currletter==wordLength)&&(allgreen)){
                 //console.log("inside end word")
                 currletter=0;
                 x++;
                 if(x==20)
                 {
                     //TODO: reset word field and related data
+                    for( i = 0; i<20;i++)
+                    {
+                        document.getElementById(i).remove();
+                        let newNodeContainer = "<div class='nodeContainer' id="+i+" >";
+                        let divContent = localStorage.getItem(Math.floor(Math.random()*3000).toString())+' ';
+                        let word="";
+                        for(let a = 0;a<divContent.length; a++){
+                            let newLetterContainer = "<span class= 'nodeLetter' >";
+                            let newLetter = divContent[a];
+                            let letterClose = "</span>"
+                            word= word+newLetterContainer+newLetter+letterClose;
+                        }
+                        let divClose = "</div>";
+
+                        $('#poop').append(newNodeContainer+word+divClose);
+                    }
+                    x = 0;
+                    wordLength = 0;
+                    currletter = 0;
+
                 }
                 wordLength = document.getElementById(x).childElementCount;
                 if(allgreen)
