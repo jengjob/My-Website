@@ -61,11 +61,12 @@
             $('#poop').append(newNodeContainer+word+divClose);
 
         }
+        let stopUser = false;
         let isKeyDown = {};
         let x= 0;
         let wordLength = 0;
         let currletter = 0;
-        let allgreen = true;
+        //let allgreen = true;
         let redcount = 0;//keeps track of which letter is missed
         wordLength = document.getElementById(x).childElementCount; 
         for(let i =0; i<wordLength-1;i++)//underlines the first word except the space
@@ -75,10 +76,7 @@
         $("#typermouth").keyup(function(e){
             isKeyDown[e.which] = false;
         }).on('keydown', function(e){
-            console.log(
-                "on.keydown firing: "+e.which
-            )
-            if(e.repeat){console.log("e.repeat = true?")}
+            //console.log("on.keydown firing: "+e.which)
             if(isKeyDown[e.which]){
                 e.preventDefault();
                 return;}
@@ -88,61 +86,77 @@
             else{
                 isKeyDown[e.which] = true;
             }
-            console.log(e.which)
+            if(stopUser&&(e.which !== 8))
+            {
+                e.preventDefault();
+                return;
+            }
+            stopUser = false;
+            //console.log(e.which)
             let userinput = e.key
-            let pattern = /^[A-Za-z ]+$/;
-            console.log(userinput)
+            let pattern = /^[-A-Za-z .']+$/;
+            //console.log(userinput)
             if(!(pattern.test(userinput)&&((userinput.length <2)||(userinput =="Backspace") )))
             {
                 console.log("not allowed")
                 e.preventDefault();
                 return;
             }
-            if((userinput === document.getElementById(x).children[currletter].textContent)&&allgreen){
+            if((redcount==0)&&(userinput === document.getElementById(x).children[currletter].textContent)){
                 //if user types in correct letter
                 // - highlight for correct letter
                 document.getElementById(x).children[currletter].style.backgroundColor = "#9dfaa7";
                 //set background green
                 
             }else if(userinput == "Backspace"){
-                if(redcount>0){
-                    redcount--;
-                } 
                 
                 if(currletter>0)
                 {currletter--}
                 else{
                     
-                    if(allgreen){
-                        return;
-
-                    }else{
-                        x--;
-                        currletter = document.getElementById(x).childElementCount-1;
-                        wordLength = document.getElementById(x).childElementCount;
-                    }
+                    
+                    if(x==0){ 
+                        
+                        return;}
+                    if(redcount==0){return;}
+                    x--;
+                    currletter = document.getElementById(x).childElementCount-1;
+                    wordLength = document.getElementById(x).childElementCount;
+                    
                 }
                 console.log(x+ "  "+ currletter+ "  "+ wordLength);
                 document.getElementById(x).children[currletter].style.backgroundColor = "white";
-                if(redcount ==0)
-                {
-                    allgreen = true;
-                }
+                
+                if(redcount>0){
+                    redcount--;
+                } 
                 return;
+                
             }else{
                 document.getElementById(x).children[currletter].style.backgroundColor = "#fc9090";
                 //set background red
-                allgreen = false;
+                
                 redcount++;
             }
+            //console.log("redcount = "+redcount);
             currletter++;
-            if((currletter==wordLength)&&(allgreen)){
+            if(currletter==wordLength){
                 //console.log("inside end word")
-                currletter=0;
                 x++;
+                if((x==20)&&(!(redcount==0))){
+                    redcount--;
+                    x--;
+                    currletter--;
+                    document.getElementById(x).children[currletter].style.backgroundColor = "white";
+                    e.preventDefault();
+                    return;
+                }
+                currletter=0;
+                
                 if(x==20)
                 {
                     //TODO: reset word field and related data
+                    
                     for( i = 0; i<20;i++)
                     {
                         document.getElementById(i).remove();
@@ -160,12 +174,16 @@
                         $('#poop').append(newNodeContainer+word+divClose);
                     }
                     x = 0;
-                    wordLength = 0;
+                    wordLength = document.getElementById(x).childElementCount;
                     currletter = 0;
+                    document.getElementById("typermouth").value = "";
+                    e.preventDefault();
+                    return;
 
                 }
+
                 wordLength = document.getElementById(x).childElementCount;
-                if(allgreen)
+                if(redcount==0)
                 {
                     document.getElementById("typermouth").value = "";
                     e.preventDefault();
